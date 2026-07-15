@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyMTO1zV717DMcpwz1HgEV3M",
+      "authorship_tag": "ABX9TyMclapZNXza2j9TvQMkJXTV",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -204,6 +204,80 @@
             "110 -> CONST DC 5\n",
             "114 -> JMP LOOP\n",
             "118 -> END\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**WAP python program to implement path 1 of a 2 path assembler by genrating the symbol table and intermediate code**\n"
+      ],
+      "metadata": {
+        "id": "qKLXo97k9LI7"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "locctr = int(input(\"Enter starting address: \"))\n",
+        "n = int(input(\"Enter number of assembly statements: \"))\n",
+        "\n",
+        "symbol_table = {}\n",
+        "intermediate = []\n",
+        "\n",
+        "print(\"\\nEnter statements in the format:\")\n",
+        "print(\"LABEL OPCODE OPERAND\")\n",
+        "print(\"(Use - if LABEL is absent)\\n\")\n",
+        "\n",
+        "for _ in range(n):\n",
+        "    parts = input().split()\n",
+        "\n",
+        "    if len(parts) != 3:\n",
+        "        print(\"Invalid input format\")\n",
+        "        continue\n",
+        "\n",
+        "    label, opcode, operand = parts\n",
+        "\n",
+        "    if label != \"-\":\n",
+        "        symbol_table[label] = locctr\n",
+        "\n",
+        "    intermediate.append((locctr, opcode, operand))\n",
+        "\n",
+        "    locctr += 4\n",
+        "\n",
+        "print(\"\\n----- SYMBOL TABLE -----\")\n",
+        "print(\"Label\\tAddress\")\n",
+        "\n",
+        "for label, addr in symbol_table.items():\n",
+        "    print(f\"{label}\\t{addr}\")\n",
+        "\n",
+        "print(\"\\n----- INTERMEDIATE CODE -----\")\n",
+        "print(\"Address\\tOpcode\\tOperand\")\n",
+        "\n",
+        "for item in intermediate:\n",
+        "    print(f\"{item[0]}\\t{item[1]}\\t{item[2]}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xb1oZnOY9uqC",
+        "outputId": "6549644d-5390-46d6-93e6-03fc7b3ce332"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter starting address: 10000\n",
+            "Enter number of assembly statements: 5\n",
+            "\n",
+            "Enter statements in the format:\n",
+            "LABEL OPCODE OPERAND\n",
+            "(Use - if LABEL is absent)\n",
+            "\n"
           ]
         }
       ]
