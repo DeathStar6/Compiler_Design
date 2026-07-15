@@ -1,0 +1,212 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMTO1zV717DMcpwz1HgEV3M",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/DeathStar6/Compiler_Design/blob/main/Assignment%20\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "WAP in python to read assembly level and their addressesadn genrtae a symbol table"
+      ],
+      "metadata": {
+        "id": "UzMyGnzz2kgm"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "4XGkGORQz4Ws",
+        "outputId": "3d12ab4c-fa59-4c3c-c269-64e0e1cd12a6"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter number of assembly instructions: 3\n",
+            "\n",
+            "Enter assembly instructions in format:\n",
+            "ADDRESS LABEL: INSTRUCTION\n",
+            "Example: 100 START: MOV A, B\n",
+            "\n",
+            "Line 1: 10 START: MOV A, B\n",
+            "Line 2: 20 START: MOV A, B\n",
+            "Line 3: 30 START: MOV A, B\n",
+            "\n",
+            "Generated Symbol Table:\n",
+            "------------------------\n",
+            "Symbol\tAddress\n",
+            "------------------------\n",
+            "START \t 30\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Program to read assembly instructions with addresses\n",
+        "# and generate a symbol table\n",
+        "\n",
+        "def generate_symbol_table():\n",
+        "    # Dictionary to store symbol table\n",
+        "    symbol_table = {}\n",
+        "\n",
+        "    # Take number of lines as input\n",
+        "    n = int(input(\"Enter number of assembly instructions: \"))\n",
+        "\n",
+        "    print(\"\\nEnter assembly instructions in format:\")\n",
+        "    print(\"ADDRESS LABEL: INSTRUCTION\")\n",
+        "    print(\"Example: 100 START: MOV A, B\\n\")\n",
+        "\n",
+        "    # Loop to read each line\n",
+        "    for i in range(n):\n",
+        "        line = input(f\"Line {i+1}: \")\n",
+        "\n",
+        "        # Split address and rest of instruction\n",
+        "        parts = line.strip().split(maxsplit=1)\n",
+        "\n",
+        "        # Check if address is present\n",
+        "        if len(parts) < 2:\n",
+        "            print(\"Invalid format! Skipping line.\")\n",
+        "            continue\n",
+        "\n",
+        "        address = parts[0]\n",
+        "        rest = parts[1]\n",
+        "\n",
+        "        # Check if label exists (LABEL:)\n",
+        "        words = rest.split()\n",
+        "\n",
+        "        if len(words) > 0 and words[0].endswith(\":\"):\n",
+        "            # Remove ':' from label\n",
+        "            label = words[0][:-1]\n",
+        "\n",
+        "            # Store in symbol table\n",
+        "            symbol_table[label] = int(address)\n",
+        "\n",
+        "    # Display Symbol Table\n",
+        "    print(\"\\nGenerated Symbol Table:\")\n",
+        "    print(\"------------------------\")\n",
+        "    print(\"Symbol\\tAddress\")\n",
+        "    print(\"------------------------\")\n",
+        "\n",
+        "    for symbol in symbol_table:\n",
+        "        print(symbol, \"\\t\", symbol_table[symbol])\n",
+        "\n",
+        "\n",
+        "# Run the program\n",
+        "generate_symbol_table()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "WAP python program to simulate the location counter while processing assymbly instruction"
+      ],
+      "metadata": {
+        "id": "uaOUBqoN2sfc"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def simulate_LC(code):\n",
+        "    LC = 0  # Location Counter\n",
+        "\n",
+        "    for line in code:\n",
+        "        parts = line.strip().split()\n",
+        "\n",
+        "        # Handle START directive\n",
+        "        if parts[0] == \"START\":\n",
+        "            LC = int(parts[1])\n",
+        "            print(f\"{LC} -> {line}\")\n",
+        "\n",
+        "        # Handle label (LABEL:)\n",
+        "        elif parts[0].endswith(\":\"):\n",
+        "            print(f\"{LC} -> {line}\")\n",
+        "            LC += 4   # instruction size\n",
+        "\n",
+        "        # Handle DS (Define Storage)\n",
+        "        elif \"DS\" in parts:\n",
+        "            print(f\"{LC} -> {line}\")\n",
+        "            LC += int(parts[-1])  # allocate memory\n",
+        "\n",
+        "        # Handle DC (Define Constant)\n",
+        "        elif \"DC\" in parts:\n",
+        "            print(f\"{LC} -> {line}\")\n",
+        "            LC += 4   # assume constant = 4 bytes\n",
+        "\n",
+        "        # Handle END\n",
+        "        elif parts[0] == \"END\":\n",
+        "            print(f\"{LC} -> {line}\")\n",
+        "            break\n",
+        "\n",
+        "        # Normal instruction\n",
+        "        else:\n",
+        "            print(f\"{LC} -> {line}\")\n",
+        "            LC += 4   # assume each instruction = 4 bytes\n",
+        "\n",
+        "\n",
+        "# Sample Assembly Code\n",
+        "assembly_code = [\n",
+        "    \"START 100\",\n",
+        "    \"LOOP: MOVER AREG, B\",\n",
+        "    \"ADD AREG, C\",\n",
+        "    \"VAR DS 2\",\n",
+        "    \"CONST DC 5\",\n",
+        "    \"JMP LOOP\",\n",
+        "    \"END\"\n",
+        "]\n",
+        "\n",
+        "simulate_LC(assembly_code)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lRvlMD082xmb",
+        "outputId": "5ecfaa0d-9a0b-4649-e9bc-ff2bb683e091"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "100 -> START 100\n",
+            "100 -> LOOP: MOVER AREG, B\n",
+            "104 -> ADD AREG, C\n",
+            "108 -> VAR DS 2\n",
+            "110 -> CONST DC 5\n",
+            "114 -> JMP LOOP\n",
+            "118 -> END\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
